@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Authentication Page</title>
+    <link rel="stylesheet" href="logi.css">
+    <script src="https://kit.fontawesome.com/1c5f9c12e8.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="form-box">
+            <h1 id="title">Sign Up</h1>
+            <form id="registrationForm">
+                <div class="input-group">
+                    <div class="input-field" id="nameField">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="nameInput" placeholder="Name" required>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="emailInput" placeholder="Email" required>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="passwordInput" placeholder="Password" required>
+                        <p id="passwordHint" style="font-size: 12px; color: #888;">Password should be at least 12 characters long and contain at least one uppercase letter, one number, and one special character.</p>
+                    </div>
+                    <div id="errorMessages" style="color: red;"></div>
+
+                    <p>Already registered? <a href="#" id="signInLink">Sign In</a></p>
+
+                </div>
+
+                <div class="btn-field">
+                    <button type="submit" id="signupBtn">Sign Up</button>
+                    <!-- Add submit button for sign-in -->
+                    <button type="button" id="signinBtn" class="disable">Sign In</button>
+                </div>
+            </form>
+            <!-- Add sign-in form -->
+            <form id="signInForm" style="display: none;">
+                <h1 id="signInTitle"></h1>
+                <div class="input-group">
+                    <div class="input-field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="signInEmailInput" placeholder="Email" required>
+                    </div>
+
+                    <div class="input-field">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="signInPasswordInput" placeholder="Password" required>
+                    </div>
+                </div>
+                <div class="btn-field">
+                    <button type="button" id="signInSubmitBtn">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+   document.addEventListener("DOMContentLoaded", function() {
+    let registeredUsers = []; // Array to store registered users
+
+    // Function to handle user registration
+    document.getElementById("registrationForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        let name = document.getElementById("nameInput").value;
+        let email = document.getElementById("emailInput").value;
+        let password = document.getElementById("passwordInput").value;
+
+        // Check if email is already registered
+        let isEmailTaken = registeredUsers.some(user => user.email === email);
+        if (isEmailTaken) {
+            alert("Email already taken! Please use a different email.");
+            return;
+        }
+
+        // Password validation criteria
+        let minLength = 12;
+        let hasUppercase = /[A-Z]/.test(password);
+        let hasNumber = /[0-9]/.test(password);
+        let hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+        // Validate password
+        if (password.length < minLength || !hasUppercase || !hasNumber || !hasSpecialChar) {
+            alert("Password must be at least 12 characters long and contain at least one uppercase letter, one number, and one special character.");
+            return;
+        }
+
+        // Add user to the array of registered users
+        registeredUsers.push({ name, email, password });
+
+        // Reset form fields
+        document.getElementById("registrationForm").reset();
+        alert("Registration successful! You can now sign in.");
+
+        // Switch to sign-in form
+        switchToSignInForm();
+    });
+
+    // Function to switch to the sign-in form
+    function switchToSignInForm() {
+        document.getElementById("registrationForm").style.display = "none";
+        document.getElementById("signInForm").style.display = "block";
+        document.getElementById("title").innerText = "Sign In";
+    }
+
+    // Function to handle user sign-in
+    document.getElementById("signInSubmitBtn").addEventListener("click", function() {
+        let emailInput = document.getElementById("signInEmailInput").value;
+        let passwordInput = document.getElementById("signInPasswordInput").value;
+
+        // Find the user by email
+        let foundUser = registeredUsers.find(user => user.email === emailInput);
+
+        // Check if user exists and the password matches
+        if (foundUser && foundUser.password === passwordInput) {
+            alert("Login successful! Welcome, " + foundUser.name + "!");
+        } else {
+            alert("Email or password incorrect. Please try again or register if you haven't.");
+        }
+    });
+
+    // Handle Sign In link click
+    document.getElementById("signInLink").onclick = function(event) {
+        event.preventDefault();
+        switchToSignInForm();
+    };
+});
+
+</script>    
+</body>
+</html>
